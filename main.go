@@ -2,8 +2,9 @@
 package main
 
 import (
+	"bytes"
 	"flag"
-	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -15,14 +16,20 @@ var (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
+	var buf bytes.Buffer
 	args := flag.Args()
 	cmd := exec.Command(args[0], args[1:]...)
-	cmd.Stdout = w
+	cmd.Stdout = &buf
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(w, "error: %v", err)
 		log.Printf("error: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	_, err := io.Copy(w, &buf)
+	if err != nil {
+		log.Printf("error writing to client: %v", err)
 	}
 }
 

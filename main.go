@@ -25,7 +25,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	if err := cmd.Run(); err != nil {
 		log.Printf("error: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
 	}
 	_, err := io.Copy(w, &buf)
 	if err != nil {

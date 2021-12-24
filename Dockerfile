@@ -10,7 +10,7 @@ COPY ./ ./
 RUN go build -o /app
 
 # distroless with busybox
-FROM gcr.io/distroless/base@sha256:9ec63deea5466b74effdf17186589a647fb1757856c15ae6eae7d878affa675d
+FROM gcr.io/distroless/base@sha256:03dcbf61f859d0ae4c69c6242c9e5c3d7e1a42e5d3b69eb235e81a5810dd768e
 
 COPY --from=builder /app /app
 
